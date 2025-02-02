@@ -1,4 +1,5 @@
 NAME = so_long
+LIBFT = libft/libft.a
 
 CC = cc
 CFLAGS = -g -Wall -Wextra -Werror
@@ -9,24 +10,30 @@ SRC = src/main.c \
       src/game_init.c \
       src/player_move.c \
       src/utils.c \
-      # Add your other .c files here
+      src/path_finder.c \
+	  # Add your other .c files here
 
 OBJ = $(SRC:.c=.o)
 
-all: $(NAME)
+all: $(LIBFT) $(NAME)
+
+$(LIBFT):
+	make -C libft/
 
 $(NAME): $(OBJ)
 	make -C mlx/
-	$(CC) $(OBJ) $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(OBJ) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -Imlx -c $< -o $@
+	$(CC) $(CFLAGS) -Imlx -Ilibft -c $< -o $@
 
 clean:
 	make clean -C mlx/
+	make clean -C libft/
 	rm -f $(OBJ)
 
 fclean: clean
+	make fclean -C libft/
 	rm -f $(NAME)
 
 re: fclean all
